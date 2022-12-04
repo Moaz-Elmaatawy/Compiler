@@ -1,7 +1,4 @@
 #include "Dfa.h"
-#include <iostream>
-#include <string>
-#include <stdio.h>
 
 Dfa::Dfa() = default;
 
