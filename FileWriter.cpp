@@ -7,7 +7,7 @@ void FileWriter::printTransitionTable(map<string, map<string, string>> transitio
     int currStateNumber = 0;
     auto currTransistion = transitions.find("S" + to_string(currStateNumber));
     while (currTransistion != transitions.end()) {
-        // file << setw(12) << left << currTransistion->first;
+        file << setw(12) << left << currTransistion->first;
         for (auto j : currTransistion->second) {
             string stateOut = j.first + " -> " + ((j.second.empty()) ? "X" : j.second);
             file << setw(20) << left << stateOut;
