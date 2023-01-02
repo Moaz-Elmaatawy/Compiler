@@ -1,6 +1,7 @@
-cmake_minimum_required(VERSION 3.17.3)
-project(LexicalAnalyzerGenerator)
+cmake_minimum_required(VERSION 3.20.1)
 
-set(CMAKE_CXX_STANDARD 14)
+project(LEXICAL_ANALYZER)
 
-add_executable(LexicalAnalyzerGenerator main.cpp Nfa.h Nfa.cpp InputParser.h InputParser.cpp DFA.cpp DFA.h Token.cpp Token.h LanguageParser.cpp LanguageParser.h MinimizedDfa.cpp MinimizedDfa.h FileWriter.cpp FileWriter.h)
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(LexicalAnalyzer src/main.cpp src/NFA/NFA.cpp src/NFA/NFA.h src/NFA/NFABuilder.cpp src/NFA/NFABuilder.h src/Parser/GrammarParser.cpp src/Parser/GrammarParser.h src/NFA/NFA.h src/NFA/NFACombiner.cpp src/NFA/NFACombiner.h src/Utils/RegularExpression.h src/Utils/Component.h src/Utils/ParserUtils.cpp src/Utils/ParserUtils.h src/Parser/LexicalParser.cpp src/Parser/LexicalParser.h src/DFA/DFA.cpp src/DFA/DFA.h)
