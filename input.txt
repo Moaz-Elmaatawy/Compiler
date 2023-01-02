@@ -1,5 +1,14 @@
-int sum , count , pass , mnt; while (pass !=
-10)
+int x;
+x = 3;
+x = x + x;
+while(x < 2) {
+ x = x + 1;
+}
+if ( x < 3 )
 {
-pass = pass + 1 ;
+x = 9;
+}
+else
+{
+x = 7;
 }

@@ -6,7 +6,7 @@ digits = digit+
 num: digit+ | digit+ . digits ( \L | E digits)
 relop: \=\= | !\= | > | >\= | < | <\=
 assign: \=
-{ if else while }
+{ if else while true false}
 [; , \( \) { }]
 addop: \+ | \-
 mulop: \* | /

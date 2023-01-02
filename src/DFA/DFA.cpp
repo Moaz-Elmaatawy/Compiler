@@ -1,6 +1,6 @@
 #include "DFA.h"
 
-const vector<DFA::State>& DFA::getStates() const {
+const vector<DFA::State> &DFA::getStates() const {
     return states;
 }
 

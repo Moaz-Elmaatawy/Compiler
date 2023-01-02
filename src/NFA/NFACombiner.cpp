@@ -3,7 +3,6 @@
 #include "NFACombiner.h"
 
 
-
 template<typename T>
 T poll(stack<T> &st) {
     if (!st.empty()) {
@@ -49,15 +48,13 @@ NFA NFACombiner::regDefToNFA(const vector<component> &components) {
             i += 2;
         } else if (comp.type == POS_CLOSURE || comp.type == KLEENE_CLOSURE) {
             NFABuilders.push(applyClosure(comp, poll(NFABuilders)));
-        }
-        else if (comp.type == OPEN_BRACKETS) {
+        } else if (comp.type == OPEN_BRACKETS) {
             NFABuilders.push(getBetweenBrackets(components, &i));
         } else if (comp.type == REG_EXP || comp.type == REG_DEF) {
             if (regToNFA.find(comp.regularDefinition) == regToNFA.end())
                 throw logic_error(comp.regularDefinition + " Was not parsed.");
             NFABuilders.push(NFABuilder(regToNFA[comp.regularDefinition]));
-        }
-        else if (comp.type == CONCAT || comp.type == OR) {
+        } else if (comp.type == CONCAT || comp.type == OR) {
             while (!operations.empty() && (operations.top() == CONCAT && comp.type == OR)) {
                 NFABuilders.push(applyBinaryOperation(poll(operations), poll(NFABuilders), poll(NFABuilders)));
             }

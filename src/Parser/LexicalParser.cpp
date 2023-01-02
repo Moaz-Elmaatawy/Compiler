@@ -15,37 +15,38 @@ DFA LexicalParser::getDFA(const string &inputFilePath) {
     return dfa;
 }
 
-void LexicalParser::writeTransitionTable(const string& transitionTableFilePath) {
+void LexicalParser::writeTransitionTable(const string &transitionTableFilePath) {
     ofstream transitionsFile(transitionTableFilePath);
-    cout<<"Number of States: "<<dfa.getStates().size()<<endl;
+    cout << "Number of States: " << dfa.getStates().size() << endl;
 
     vector<DFA::State> states = dfa.getStates();
     int numberOfStates = states.size();
-    for(int i=0;i<numberOfStates;++i){
-        string stateString = "S"+to_string(i)+(states[i].isAccepting?(" "+states[i].regExp):"");
-        transitionsFile<< setw(12) << left <<stateString;
-        for(char j=33;j<126;++j){
-            string s=string(1,j)+" ==> "+(states[i].transitions[j]==1?"x":("S"+to_string(states[i].transitions[j])));
-            transitionsFile<<setw(20)<<left<<s;
+    for (int i = 0; i < numberOfStates; ++i) {
+        string stateString = "S" + to_string(i) + (states[i].isAccepting ? (" " + states[i].regExp) : "");
+        transitionsFile << setw(12) << left << stateString;
+        for (char j = 33; j < 126; ++j) {
+            string s = string(1, j) + " ==> " +
+                       (states[i].transitions[j] == 1 ? "x" : ("S" + to_string(states[i].transitions[j])));
+            transitionsFile << setw(20) << left << s;
         }
-        transitionsFile<<endl;
+        transitionsFile << endl;
     }
 }
 
-void LexicalParser::writeAcceptingStates(const string& acceptingStatesFilePath) {
+void LexicalParser::writeAcceptingStates(const string &acceptingStatesFilePath) {
     ofstream acceptingStatesFile(acceptingStatesFilePath);
 
     vector<DFA::State> states = dfa.getStates();
     int numberOfStates = states.size();
     int acceptingStatesCount = 0;
-    for(int i=0;i<numberOfStates;++i){
-        if(states[i].isAccepting) {
-            string stateString = "S"+to_string(i) + "\t" + states[i].regExp;
+    for (int i = 0; i < numberOfStates; ++i) {
+        if (states[i].isAccepting) {
+            string stateString = "S" + to_string(i) + "\t" + states[i].regExp;
             acceptingStatesFile << stateString << endl;
             acceptingStatesCount++;
         }
     }
-    cout<<"Number of Accepting States: "<<acceptingStatesCount<<endl;
+    cout << "Number of Accepting States: " << acceptingStatesCount << endl;
 }
 
 void LexicalParser::setInputStream(const string &input_stream) {
@@ -59,13 +60,19 @@ bool LexicalParser::hasGrammarError() const {
 }
 
 
-bool LexicalParser::getNextToken(Token &token) {
+bool LexicalParser::getToken(Token &token) {
     if (tokenQueue.empty() && !getNextLine()) {
         return false;
     }
-    token = move(tokenQueue.front());
-    tokenQueue.pop();
+    token = tokenQueue.front();
     return true;
+}
+
+
+void LexicalParser::nextToken() {
+    if (!tokenQueue.empty()) {
+        tokenQueue.pop();
+    }
 }
 
 int LexicalParser::getNextLine() {
@@ -77,7 +84,7 @@ int LexicalParser::getNextLine() {
         lineNumber++;
         istringstream iss(line);
         vector<string> words{istream_iterator<string>{iss},
-                                       istream_iterator<string>{}};
+                             istream_iterator<string>{}};
         for (const auto &word: words) {
             applyMaximalMunch(word);
         }
@@ -113,7 +120,7 @@ void LexicalParser::applyMaximalMunch(const string &segment) {
     }
 }
 
-vector<RegularExpression> LexicalParser::getRegExps(const string&inputFilePath) {
+vector<RegularExpression> LexicalParser::getRegExps(const string &inputFilePath) {
     GrammarParser parser = GrammarParser(inputFilePath);
     const vector<pair<string, vector<component>>> &regDefComponents =
             parser.getRegDefComponents();
