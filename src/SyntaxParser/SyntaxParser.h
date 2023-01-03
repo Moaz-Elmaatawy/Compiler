@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "GrammerTypes.h"
+#include "GrammarTypes.h"
 #include "ParsingTable.h"
 #include "../Parser/LexicalParser.h"
 

@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "GrammerTypes.h"
+#include "GrammarTypes.h"
 
 using namespace std;
 

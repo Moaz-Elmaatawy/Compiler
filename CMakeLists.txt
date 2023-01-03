@@ -27,7 +27,7 @@ add_executable(LexicalAnalyzer
         src/SyntaxParser/ParsingTable.h
         src/SyntaxParser/LL1GrammarBuilder.h
         src/SyntaxParser/LL1GrammarBuilder.cpp
-        src/SyntaxParser/GrammerTypes.h
+        src/SyntaxParser/GrammarTypes.h
         src/SyntaxParser/SyntaxParser.cpp
         src/SyntaxParser/SyntaxParser.h
         src/SyntaxParser/SyntaxUtils.cpp

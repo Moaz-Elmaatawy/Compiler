@@ -6,7 +6,7 @@
 #include <tuple>
 #include <memory>
 #include "../Utils/ParserUtils.h"
-#include "GrammerTypes.h"
+#include "GrammarTypes.h"
 
 #ifndef LEXICAL_ANALYZER_LL1GRAMMARBUILDER_H
 #define LEXICAL_ANALYZER_LL1GRAMMARBUILDER_H
