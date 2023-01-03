@@ -7,7 +7,7 @@ const char RULE_START = '#';
 const char RULE_ASSIGNMENT = '=';
 const char DASH = '\'';
 
-LL1GrammarBuilder::LL1GrammarBuilder(const string &inputFilePath) : has_error(false) {
+LL1GrammarBuilder::LL1GrammarBuilder(const string &inputFilePath) : hasError(false) {
     fstream file;
     file.open(inputFilePath, ios::in);
     if (!file.is_open()) {
@@ -31,31 +31,32 @@ LL1GrammarBuilder::LL1GrammarBuilder(const string &inputFilePath) : has_error(fa
     for (const auto &[symbol, defined]: encounteredSymbols) {
         if (!defined) {
             cerr << "Error, No production rules for this symbol: " << symbol << "\n";
-            has_error = true;
+            hasError = true;
         }
     }
 }
 
 void LL1GrammarBuilder::buildLL1Grammar() {
     eliminateLeftRecursion();
+    printLL1Grammar("../NoLeftRec.txt");
     applyLeftFactoring();
 }
 
-void LL1GrammarBuilder::printLL1Grammar(const string &ll1GrammarPath){
+void LL1GrammarBuilder::printLL1Grammar(const string &ll1GrammarPath) {
     ofstream ll1GrammarFile{ll1GrammarPath};
     for (const auto &[symbol, productions]: rules) {
-        ll1GrammarFile<<symbol.name<<" = ";
-        for(auto it = productions.begin(); it != productions.end(); ++it){
-            for(const auto &sym : *it){
-                if(sym.type == Symbol::Type::TERMINAL)
-                    ll1GrammarFile<<"\'"<<sym.name<<"\' ";
+        ll1GrammarFile << symbol.name << " = ";
+        for (auto it = productions.begin(); it != productions.end(); ++it) {
+            for (const auto &sym: *it) {
+                if (sym.type == Symbol::Type::TERMINAL)
+                    ll1GrammarFile << "\'" << sym.name << "\' ";
                 else
-                    ll1GrammarFile<<sym.name<<" ";
+                    ll1GrammarFile << sym.name << " ";
             }
-            if(std::next(it) != productions.end())
-                ll1GrammarFile<<" | ";
+            if (std::next(it) != productions.end())
+                ll1GrammarFile << "\n\t\t| ";
         }
-        ll1GrammarFile<<"\n";
+        ll1GrammarFile << "\n\n";
     }
     ll1GrammarFile.flush();
     ll1GrammarFile.close();
@@ -70,7 +71,7 @@ const Symbol &LL1GrammarBuilder::getStartSymbol() const {
 }
 
 bool LL1GrammarBuilder::fail() const {
-    return this->has_error;
+    return this->hasError;
 }
 
 void
@@ -80,46 +81,46 @@ LL1GrammarBuilder::insertProductionRule(string &ruleDef) {
     iss >> token;
     if (token.size() != 1 || token[0] != RULE_START) {
         cerr << "Production rules should start with #\n";
-        has_error = true;
+        hasError = true;
         return;
     }
     iss >> LHS >> token;
     if (token.size() != 1 || token[0] != RULE_ASSIGNMENT) {
-        cerr << "Production rules be on the form LHS "<<RULE_ASSIGNMENT<<" RHS\n";
-        has_error = true;
+        cerr << "Production rules be on the form LHS " << RULE_ASSIGNMENT << " RHS\n";
+        hasError = true;
         return;
     }
     encounteredSymbols[LHS] = true;
-    Production current_prod;
+    Production currentProd;
     vector<Production> productions;
     while (iss >> token) {
         if (token.size() == 1 && token[0] == PRODUCTION_SEPARATOR) {
-            if (current_prod.empty()) {
+            if (currentProd.empty()) {
                 cerr << "Production's RHS can't be empty\n";
-                has_error = true;
+                hasError = true;
                 continue;
             }
-            productions.push_back(move(current_prod)), current_prod = Production{};
+            productions.push_back(move(currentProd)), currentProd = Production{};
         } else {
             Symbol symbol;
             if (isTerminal(token)) {
                 symbol = {token.substr(1, token.size() - 2), Symbol::Type::TERMINAL};
             } else if (isEpsilon(token)) {
-                symbol = eps_symbol;
+                symbol = epsSymbol;
             } else {
                 symbol = {token, Symbol::Type::NON_TERMINAL};
                 if (!encounteredSymbols.count(token)) {
                     encounteredSymbols.insert({token, false});
                 }
             }
-            current_prod.push_back(move(symbol));
+            currentProd.push_back(move(symbol));
         }
     }
-    if (current_prod.empty()) {
+    if (currentProd.empty()) {
         cerr << "Productions can't be empty\n";
-        has_error = true;
+        hasError = true;
     } else {
-        productions.push_back(move(current_prod));
+        productions.push_back(move(currentProd));
     }
 
     if (startSymbol.name.empty()) {
@@ -199,7 +200,7 @@ void LL1GrammarBuilder::eliminateImmediateLeftRecursion(Rule &rule) {
         prod.push_back(newLhs);
         newRule.push_back(prod);
     }
-    newRule.push_back({eps_symbol});
+    newRule.push_back({epsSymbol});
 
     rules.insert({newLhs, newRule});
 }
@@ -212,103 +213,82 @@ Rule LL1GrammarBuilder::expand(Production &curProd, Rule expandedRule) {
     return expandedRule;
 }
 
-/*
- * left factoring is applied on each Rule independently.
- * Each Rule is converted to multiple rules that represent the new rules.
- */
 void LL1GrammarBuilder::applyLeftFactoring() {
-    unordered_map<Symbol, Rule> new_rules;
+    unordered_map<Symbol, Rule> newRules;
     for (const auto &rule: this->rules) {
-        const unordered_map<Symbol, Rule> &factored_rules = leftFactorRule(rule.first, rule.second);
-        new_rules.insert(factored_rules.begin(), factored_rules.end());
+        const unordered_map<Symbol, Rule> &factoredRules = leftFactorRule(rule.first, rule.second);
+        newRules.insert(factoredRules.begin(), factoredRules.end());
     }
-    this->rules = move(new_rules);
+    this->rules = move(newRules);
 }
 
-/*
- * To factor a single Rule.
- * 1- Build a trie for all productions present in the Rule.
- * 2- Traverse the trie and add new rules when needed.
- */
 unordered_map<Symbol, Rule> LL1GrammarBuilder::leftFactorRule(const Symbol &lhs, const Rule &rule) {
     unique_ptr<Node> root = make_unique<Node>();
-    // building the trie by adding each production symbols to it.
     for (const Production &production: rule)
-        addProduction(root.get(), production);
+        addProductionToTrie(root.get(), production);
 
-    //this will store the new rules generated from factoring given rule
-    unordered_map<Symbol, Rule> new_rules;
+
+    unordered_map<Symbol, Rule> newRules;
     if (root->children.size() == 1) {
         // This a special case when the root contains one child.
-        // We must add the first rule here from the return value from dfs call.
-        new_rules.insert({lhs, Rule(lhs.name)});
-        Production new_production = dfs(root.get(), new_rules, lhs);
-        reformat_production(new_production);
-        new_rules.at(lhs) = Rule(lhs.name, {move(new_production)});
+        // Example: A = BC | BD | BE
+        newRules.insert({lhs, Rule(lhs.name)});
+        Production newProduction = dfs(root.get(), newRules, lhs);
+        reformatProduction(newProduction);
+        newRules.at(lhs) = Rule(lhs.name, {move(newProduction)});
     } else {
-        dfs(root.get(), new_rules, lhs);
+        dfs(root.get(), newRules, lhs);
     }
-    return new_rules;
+    return newRules;
 }
 
-// add a production to the trie by adding its symbols to corresponding nodes.
-void LL1GrammarBuilder::addProduction(Node *node, const Production &production) {
+
+void LL1GrammarBuilder::addProductionToTrie(Node *node, const Production &production) {
     for (const auto &symbol: production) {
         if (node->children.find(symbol) == node->children.end())
             node->children.insert({symbol, make_unique<Node>()});
         node = node->children[symbol].get();
     }
-    // add epsilon at the end of every production to mark leaf nodes.
-    // handle the case when one production is prefix of another.
-    node->children.insert({eps_symbol, make_unique<Node>()});
+    // to mark leaf nodes an epsilon symbol is added at the end
+    node->children.insert({epsSymbol, make_unique<Node>()});
 }
 
-// dfs the whole trie and add a rule for every node with more than one child.
-vector<Symbol> LL1GrammarBuilder::dfs(Node *node, unordered_map<Symbol, Rule> &new_rules,
-                                      const Symbol &origin_lhs) {
-    // base case when reaching leaf node.
+vector<Symbol> LL1GrammarBuilder::dfs(Node *node, unordered_map<Symbol, Rule> &newRules,
+                                      const Symbol &originLhs) {
     if (node->children.empty())
         return {};
 
     // if node has only one child no need to add new rule.
-    // Just continue the dfs and the child to be a prefix to the returned value when reversed.
     if (node->children.size() == 1) {
         const auto &onlyChild = node->children.begin();
-        vector<Symbol> symbols = dfs(onlyChild->second.get(), new_rules, origin_lhs);
+        vector<Symbol> symbols = dfs(onlyChild->second.get(), newRules, originLhs);
         symbols.push_back(onlyChild->first);
         return symbols;
     }
 
-    // if more than one child is present, we need to add a rule where each child will have a production in this rule.
-    Symbol new_lhs = origin_lhs;
-    //The new Rule lhs is determined from the new_rules current size to have a unique lhs for each rule (A, A1, A2, ...)
-    if (new_rules.size() >= 1)
-        new_lhs.name += to_string(new_rules.size());
-    new_rules.insert({new_lhs, Rule(new_lhs.name)});
+    // Generate a name for new rule using the current rules size
+    Symbol newLhs = originLhs;
+    if (newRules.size() >= 1)
+        newLhs.name += to_string(newRules.size());
+    newRules.insert({newLhs, Rule(newLhs.name)});
 
 
-    Rule new_rule = Rule(new_lhs.name);
+    Rule newRule = Rule(newLhs.name);
     for (const auto &[symbol, child]: node->children) {
         // Get the rest of the production for this child.
-        Production new_production = dfs(child.get(), new_rules, origin_lhs);
+        Production newProduction = dfs(child.get(), newRules, originLhs);
         // Add child symbol to be a prefix for the production when reversed.
-        new_production.push_back(symbol);
-        reformat_production(new_production);
-        new_rule.emplace_back(move(new_production));
+        newProduction.push_back(symbol);
+        reformatProduction(newProduction);
+        newRule.emplace_back(move(newProduction));
     }
-    new_rules.at(new_lhs) = Rule(new_lhs.name, move(new_rule));
-    return {new_lhs};
+    newRules.at(newLhs) = Rule(newLhs.name, move(newRule));
+    return {newLhs};
 }
 
-// Reverse the production and Remove the epsilon added to mark leaf nodes if it unnecessary.
-// It is kept when one production is prefix of another
-// Example : A -> a | ab
-// After   : A -> aA1
-//          A1 -> b | Є
-void LL1GrammarBuilder::reformat_production(Production &production) {
+void LL1GrammarBuilder::reformatProduction(Production &production) {
     reverse(production.begin(), production.end());
-    if (production.size() >= 2 && production.back() == eps_symbol)
+    // Unnecessary epsilon was marking leaf node
+    if (production.size() >= 2 && production.back() == epsSymbol)
         production.pop_back();
 }
-
-

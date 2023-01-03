@@ -35,7 +35,7 @@ namespace std {
     };
 }
 
-const Symbol eps_symbol = {"\\L", Symbol::Type::EPSILON};
+const Symbol epsSymbol = {"\\L", Symbol::Type::EPSILON};
 
 using Production = vector<Symbol>;
 

@@ -27,12 +27,12 @@ SyntaxUtils::First_set SyntaxUtils::first_of(const Symbol &symbol) const {
 }
 
 SyntaxUtils::First_set SyntaxUtils::first_of(const Production &production) const {
-    First_set curr_first = {eps_symbol};
+    First_set curr_first = {epsSymbol};
     for (const Symbol &symbol: production) {
         First_set symbol_first = first_of(symbol);
         curr_first.insert(symbol_first.begin(), symbol_first.end());
-        if (symbol_first.find(eps_symbol) == symbol_first.end()) {
-            curr_first.erase(eps_symbol);
+        if (symbol_first.find(epsSymbol) == symbol_first.end()) {
+            curr_first.erase(epsSymbol);
             break;
         }
     }
@@ -61,7 +61,7 @@ void SyntaxUtils::precompute_first(const Symbol &non_terminal,
     if (this->first.find(non_terminal) != this->first.end()) {
         return;
     }
-    this->first.insert({non_terminal, {eps_symbol}});
+    this->first.insert({non_terminal, {epsSymbol}});
 
     // Assumption: no errors of these kinds are allowed.
     assert(rules.find(non_terminal) != rules.end() && "Error: The rules have some undefined symbols, check it again.");
@@ -85,12 +85,12 @@ void SyntaxUtils::precompute_first(const Symbol &non_terminal,
             } else if (symbol.type == Symbol::Type::NON_TERMINAL) {
                 precompute_first(symbol, rules);
                 const First_set &temp = this->first.at(symbol);
-                if (temp.find(eps_symbol) == temp.end()) {
+                if (temp.find(epsSymbol) == temp.end()) {
                     curr_epsilon = false;
                 }
                 current_first.insert(temp.begin(), temp.end());
             } else if (symbol.type == Symbol::Type::EPSILON) {
-                current_first.emplace(eps_symbol);
+                current_first.emplace(epsSymbol);
             }
         }
         add_epsilon |= curr_epsilon;
@@ -98,7 +98,7 @@ void SyntaxUtils::precompute_first(const Symbol &non_terminal,
 
     // Makes sure if the epsilon should be in the first set or not.
     if (!add_epsilon) {
-        current_first.erase(eps_symbol);
+        current_first.erase(epsSymbol);
     }
 }
 
@@ -129,11 +129,11 @@ void SyntaxUtils::follow_calculate_by_first(const unordered_map<Symbol, Rule> &r
                     // Update the follow set with the first set of the suffix non-terminals.
                     this->follow.at(symbol).insert(curr_first.begin(), curr_first.end());
                     auto symbol_first = this->first.at(symbol);
-                    if (symbol_first.find(eps_symbol) == symbol_first.end()) {
+                    if (symbol_first.find(epsSymbol) == symbol_first.end()) {
                         // reset the first set of the suffix non-terminals.
                         curr_first.clear();
                     } else {
-                        symbol_first.erase(eps_symbol);
+                        symbol_first.erase(epsSymbol);
                     }
                     curr_first.insert(symbol_first.begin(), symbol_first.end());
 
@@ -164,7 +164,7 @@ void SyntaxUtils::follow_calculate_by_follow(const unordered_map<Symbol, Rule> &
                     const auto &symbol_first = this->first.at(symbol);
                     auto &symbol_follow = this->follow.at(symbol);
                     updated |= SyntaxUtils::insert_into(symbol_follow, lhs_follow);
-                    if (symbol_first.find(eps_symbol) == symbol_first.end()) {
+                    if (symbol_first.find(epsSymbol) == symbol_first.end()) {
                         break;
                     }
                 }

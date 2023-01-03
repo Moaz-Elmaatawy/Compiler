@@ -45,7 +45,7 @@ private:
 
     unordered_map<Symbol, Rule> rules;
     Symbol startSymbol;
-    bool has_error;
+    bool hasError;
     unordered_map<string, bool> encounteredSymbols;
 
     struct Node {
@@ -56,9 +56,9 @@ private:
 
     unordered_map<Symbol, Rule> leftFactorRule(const Symbol &lhs, const Rule &rule);
 
-    void addProduction(Node *node, const Production &production);
+    void addProductionToTrie(Node *node, const Production &production);
 
-    vector<Symbol> dfs(Node *node, unordered_map<Symbol, Rule> &new_rules, const Symbol &origin_lhs);
+    vector<Symbol> dfs(Node *node, unordered_map<Symbol, Rule> &newRules, const Symbol &originLhs);
 
-    void reformat_production(Production &production);
+    void reformatProduction(Production &production);
 };

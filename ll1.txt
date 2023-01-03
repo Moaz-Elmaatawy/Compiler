@@ -1,20 +1,72 @@
-FACTOR = '(' EXPRESSION ')'  | 'num'  | 'id' 
-TERM = '(' EXPRESSION ')' TERM'  | 'num' TERM'  | 'id' TERM' 
-TERM' = \L  | 'mulop' FACTOR TERM' 
-SIMPLE_EXPRESSION = SIGN TERM SIMPLE_EXPRESSION'  | '(' EXPRESSION ')' TERM' SIMPLE_EXPRESSION'  | 'num' TERM' SIMPLE_EXPRESSION'  | 'id' TERM' SIMPLE_EXPRESSION' 
+FACTOR = '(' EXPRESSION ')' 
+		| 'num' 
+		| 'id' 
+
+TERM = '(' EXPRESSION ')' TERM' 
+		| 'num' TERM' 
+		| 'id' TERM' 
+
+TERM' = \L 
+		| 'mulop' FACTOR TERM' 
+
+SIMPLE_EXPRESSION = SIGN TERM SIMPLE_EXPRESSION' 
+		| '(' EXPRESSION ')' TERM' SIMPLE_EXPRESSION' 
+		| 'num' TERM' SIMPLE_EXPRESSION' 
+		| 'id' TERM' SIMPLE_EXPRESSION' 
+
 WHILE = 'while' '(' EXPRESSION ')' '{' STATEMENT '}' 
-PRIMITIVE_TYPE = 'float'  | 'int' 
-EXPRESSION = SIGN TERM SIMPLE_EXPRESSION' EXPRESSION1  | '(' EXPRESSION ')' TERM' SIMPLE_EXPRESSION' EXPRESSION2  | 'num' TERM' SIMPLE_EXPRESSION' EXPRESSION3  | 'id' TERM' SIMPLE_EXPRESSION' EXPRESSION4 
-SIMPLE_EXPRESSION' = \L  | 'addop' TERM SIMPLE_EXPRESSION' 
-STATEMENT = 'id' 'assign' EXPRESSION ';'  | 'while' '(' EXPRESSION ')' '{' STATEMENT '}'  | 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}'  | 'float' 'id' ';'  | 'int' 'id' ';' 
-METHOD_BODY = 'id' 'assign' EXPRESSION ';' STATEMENT_LIST'  | 'while' '(' EXPRESSION ')' '{' STATEMENT '}' STATEMENT_LIST'  | 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' STATEMENT_LIST'  | 'float' 'id' ';' STATEMENT_LIST'  | 'int' 'id' ';' STATEMENT_LIST' 
+
+PRIMITIVE_TYPE = 'float' 
+		| 'int' 
+
+EXPRESSION = SIGN TERM SIMPLE_EXPRESSION' EXPRESSION1 
+		| '(' EXPRESSION ')' TERM' SIMPLE_EXPRESSION' EXPRESSION2 
+		| 'num' TERM' SIMPLE_EXPRESSION' EXPRESSION3 
+		| 'id' TERM' SIMPLE_EXPRESSION' EXPRESSION4 
+
+SIMPLE_EXPRESSION' = \L 
+		| 'addop' TERM SIMPLE_EXPRESSION' 
+
+STATEMENT = 'id' 'assign' EXPRESSION ';' 
+		| 'while' '(' EXPRESSION ')' '{' STATEMENT '}' 
+		| 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' 
+		| 'float' 'id' ';' 
+		| 'int' 'id' ';' 
+
+METHOD_BODY = 'id' 'assign' EXPRESSION ';' STATEMENT_LIST' 
+		| 'while' '(' EXPRESSION ')' '{' STATEMENT '}' STATEMENT_LIST' 
+		| 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' STATEMENT_LIST' 
+		| 'float' 'id' ';' STATEMENT_LIST' 
+		| 'int' 'id' ';' STATEMENT_LIST' 
+
 IF = 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' 
-STATEMENT_LIST' = \L  | STATEMENT STATEMENT_LIST' 
-STATEMENT_LIST = 'id' 'assign' EXPRESSION ';' STATEMENT_LIST'  | 'while' '(' EXPRESSION ')' '{' STATEMENT '}' STATEMENT_LIST'  | 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' STATEMENT_LIST'  | 'float' 'id' ';' STATEMENT_LIST'  | 'int' 'id' ';' STATEMENT_LIST' 
-DECLARATION = 'float' 'id' ';'  | 'int' 'id' ';' 
-SIGN = '-'  | '+' 
+
+STATEMENT_LIST' = \L 
+		| STATEMENT STATEMENT_LIST' 
+
+STATEMENT_LIST = 'id' 'assign' EXPRESSION ';' STATEMENT_LIST' 
+		| 'while' '(' EXPRESSION ')' '{' STATEMENT '}' STATEMENT_LIST' 
+		| 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' STATEMENT_LIST' 
+		| 'float' 'id' ';' STATEMENT_LIST' 
+		| 'int' 'id' ';' STATEMENT_LIST' 
+
+DECLARATION = 'float' 'id' ';' 
+		| 'int' 'id' ';' 
+
+SIGN = '-' 
+		| '+' 
+
 ASSIGNMENT = 'id' 'assign' EXPRESSION ';' 
-EXPRESSION3 = 'relop' SIMPLE_EXPRESSION  | \L 
-EXPRESSION2 = 'relop' SIMPLE_EXPRESSION  | \L 
-EXPRESSION4 = 'relop' SIMPLE_EXPRESSION  | \L 
-EXPRESSION1 = 'relop' SIMPLE_EXPRESSION  | \L 
+
+EXPRESSION3 = 'relop' SIMPLE_EXPRESSION 
+		| \L 
+
+EXPRESSION2 = 'relop' SIMPLE_EXPRESSION 
+		| \L 
+
+EXPRESSION4 = 'relop' SIMPLE_EXPRESSION 
+		| \L 
+
+EXPRESSION1 = 'relop' SIMPLE_EXPRESSION 
+		| \L 
+

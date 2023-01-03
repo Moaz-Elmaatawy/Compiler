@@ -1,0 +1,64 @@
+SIMPLE_EXPRESSION' = 'addop' TERM SIMPLE_EXPRESSION' 
+		| \L 
+
+METHOD_BODY = 'int' 'id' ';' STATEMENT_LIST' 
+		| 'float' 'id' ';' STATEMENT_LIST' 
+		| 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' STATEMENT_LIST' 
+		| 'while' '(' EXPRESSION ')' '{' STATEMENT '}' STATEMENT_LIST' 
+		| 'id' 'assign' EXPRESSION ';' STATEMENT_LIST' 
+
+STATEMENT_LIST' = STATEMENT STATEMENT_LIST' 
+		| \L 
+
+STATEMENT_LIST = 'int' 'id' ';' STATEMENT_LIST' 
+		| 'float' 'id' ';' STATEMENT_LIST' 
+		| 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' STATEMENT_LIST' 
+		| 'while' '(' EXPRESSION ')' '{' STATEMENT '}' STATEMENT_LIST' 
+		| 'id' 'assign' EXPRESSION ';' STATEMENT_LIST' 
+
+STATEMENT = 'int' 'id' ';' 
+		| 'float' 'id' ';' 
+		| 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' 
+		| 'while' '(' EXPRESSION ')' '{' STATEMENT '}' 
+		| 'id' 'assign' EXPRESSION ';' 
+
+DECLARATION = 'int' 'id' ';' 
+		| 'float' 'id' ';' 
+
+SIGN = '+' 
+		| '-' 
+
+ASSIGNMENT = 'id' 'assign' EXPRESSION ';' 
+
+IF = 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' 
+
+EXPRESSION = 'id' TERM' SIMPLE_EXPRESSION' 
+		| 'num' TERM' SIMPLE_EXPRESSION' 
+		| '(' EXPRESSION ')' TERM' SIMPLE_EXPRESSION' 
+		| SIGN TERM SIMPLE_EXPRESSION' 
+		| 'id' TERM' SIMPLE_EXPRESSION' 'relop' SIMPLE_EXPRESSION 
+		| 'num' TERM' SIMPLE_EXPRESSION' 'relop' SIMPLE_EXPRESSION 
+		| '(' EXPRESSION ')' TERM' SIMPLE_EXPRESSION' 'relop' SIMPLE_EXPRESSION 
+		| SIGN TERM SIMPLE_EXPRESSION' 'relop' SIMPLE_EXPRESSION 
+
+PRIMITIVE_TYPE = 'int' 
+		| 'float' 
+
+WHILE = 'while' '(' EXPRESSION ')' '{' STATEMENT '}' 
+
+SIMPLE_EXPRESSION = 'id' TERM' SIMPLE_EXPRESSION' 
+		| 'num' TERM' SIMPLE_EXPRESSION' 
+		| '(' EXPRESSION ')' TERM' SIMPLE_EXPRESSION' 
+		| SIGN TERM SIMPLE_EXPRESSION' 
+
+TERM' = 'mulop' FACTOR TERM' 
+		| \L 
+
+TERM = 'id' TERM' 
+		| 'num' TERM' 
+		| '(' EXPRESSION ')' TERM' 
+
+FACTOR = 'id' 
+		| 'num' 
+		| '(' EXPRESSION ')' 
+

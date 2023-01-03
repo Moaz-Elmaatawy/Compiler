@@ -115,7 +115,7 @@ SyntaxParser::parse(LexicalParser &parser) const {
                 const Production &prod = table->getProduction(cur_sym, token_sym);
                 stk.pop_back();
                 for_each(prod.rbegin(), prod.rend(), [&](const Symbol &symbol) {
-                    if (symbol == eps_symbol) return;
+                    if (symbol == epsSymbol) return;
                     stk.push_back(symbol);
                 });
                 store_derivation();

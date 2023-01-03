@@ -31,7 +31,7 @@ void ParsingTable::addRowToTable(const Symbol &nonTerminal, const vector<Product
     Production followProduction = {};
     for (const auto &production: productions) {
         unordered_set<Symbol> productionFirst = syntaxUtils.first_of(production);
-        if (productionFirst.count(eps_symbol)) {
+        if (productionFirst.count(epsSymbol)) {
             if (followProduction.empty()) {
                 followProduction = production;
             } else {
@@ -39,7 +39,7 @@ void ParsingTable::addRowToTable(const Symbol &nonTerminal, const vector<Product
                      << " evaluates to epsilon.\n";
                 has_error = true;
             }
-            productionFirst.erase(eps_symbol);
+            productionFirst.erase(epsSymbol);
         }
         for (auto &terminal: productionFirst) {
             addProductionToRow(nonTerminal, terminal, production);
