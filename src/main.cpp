@@ -51,18 +51,17 @@ int main(int argc, char *argv[]) {
         }
         outputFile << "\n";
     }
-    outputFile.flush();
-    outputFile.close();
 
-//    while (lexicalParser.getNextToken(token)) {
+
+//    while (lexicalParser.getToken(token)) {
+//        lexicalParser.nextToken();
 //        outputFile << token.regExp << "\n";
 //    }
-//    outputFile.flush();
-//    outputFile.close();
-//
 //    lexicalParser.writeTransitionTable("../Transition_Table.txt");
 //    lexicalParser.writeAcceptingStates("../Accepting_States.txt");
 
+    outputFile.flush();
+    outputFile.close();
 
     return 0;
 }

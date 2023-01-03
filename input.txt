@@ -1,14 +1,6 @@
 int x;
-x = 3;
-x = x + x;
-while(x < 2) {
- x = x + 1;
-}
-if ( x < 3 )
+x = 5;
+if (x > 2)
 {
-x = 9;
-}
-else
-{
-x = 7;
+x = 0;
 }
