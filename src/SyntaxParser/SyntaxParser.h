@@ -10,7 +10,7 @@
 
 class SyntaxParser {
 public:
-    SyntaxParser(const unordered_map<Symbol, Rule> &rules, const Symbol &staring_symbol);
+    SyntaxParser(const unordered_map<Symbol, Rule> &rules, const Symbol &staringSymbol);
 
     enum class Status {
         ACCEPTED,
@@ -23,15 +23,18 @@ public:
     bool fail() const;
 
 private:
-    bool has_error{};
-    Symbol starting_symbol;
+    bool hasError{};
+    Symbol startingSymbol;
     unique_ptr<ParsingTable> table;
 
     enum class Behavior {
-        MATCH_TERMINAL, ENTRY_EXISTS, SYNC_ENTRY, NO_ENTRY
+        MATCH_TERMINAL,
+        ENTRY_EXISTS,
+        SYNC_ENTRY,
+        NO_ENTRY
     };
 
-    SyntaxParser::Behavior get_behavior(const Symbol &cur_sym, const Symbol &token_sym) const;
+    SyntaxParser::Behavior getBehavior(const Symbol &topOfStack, const Symbol &tokenSym) const;
 };
 
 
